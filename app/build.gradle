@@ -1,6 +1,15 @@
 apply plugin: 'com.android.application'
 
+
 android {
+    signingConfigs {
+        jenkins {
+            storeFile file('../startai-key')
+            storePassword 'startai'
+            keyPassword 'startai'
+            keyAlias = 'radarwall'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
@@ -14,9 +23,23 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.jenkins
+        }
+        debug {
+            signingConfig signingConfigs.jenkins
         }
     }
+
+    //在apk文件后边生成版本号信息
+    android.applicationVariants.all {
+        variant ->
+            variant.outputs.all {
+                //在这里修改apk文件名
+                outputFileName = "Jenkins-v${variant.versionName}-"+buildType.name+".apk"
+            }
+    }
+
 }
 
 dependencies {
