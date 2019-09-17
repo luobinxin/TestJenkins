@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+def cmd = 'git rev-list --all --count'
+def gitVersion = cmd.execute().text.trim().toInteger()
+
+def cmd2 = 'git describe --tags  --dirty'
+def verName = cmd2.execute().text.trim().split("-")[0]
 
 android {
     signingConfigs {
@@ -16,8 +21,8 @@ android {
         applicationId "cn.com.startai.testjenkins"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode gitVersion
+        versionName verName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -49,4 +54,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-}
+
+    api 'cn.com.startai:common:1.1.24'
+ }
